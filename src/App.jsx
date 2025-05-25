@@ -7,18 +7,29 @@ import { MdCancel } from 'react-icons/md';
 function App() {
 
    const[openfullstory,setopenfullstory] = useState(false);
-   const[Allfullstory,setAllfullstory] = useState([
-   ]);
+   const[Allfullstory,setAllfullstory]   = useState([]);
+   const[StoryLoader,setStoryLoader]     = useState(false);
 
   const Storyshowhandler = (mainimage,name) => {   
           setopenfullstory(true);
           const NewStory = { image : mainimage, name : name }
-          setAllfullstory((prev) => [
-             ...prev,
-             NewStory
-          ]);
 
-          console.log('al story =',Allfullstory);
+          setStoryLoader(false);
+
+        //  const newstory = setInterval(() => {
+        //     setAllfullstory([NewStory]);
+        //     console.log('moving to next');
+        //   }, 5000);
+
+         const Showtimer = setTimeout(() => {
+            setAllfullstory([NewStory])
+          } , 1000);
+
+          return () => clearInterval(Showtimer);
+  }
+
+  const cancelhandler = () => {
+      setopenfullstory((prev) => !prev)
   }
 
   return (
@@ -39,18 +50,21 @@ function App() {
          </div>
 
             <div>
-              {Allfullstory && Allfullstory?.map(i => {
-                return (
-                  <div key = {i?.id}>
-                        <div className='w-full z-50 h-[100vh] p-6'> 
-                          <span className='absolute z-[100]  top-30 bg-gray-500 p-[1px] rounded-full '> 
-                            <MdCancel className='text-3xl' /> 
-                          </span>
-                          <img src = {i?.image} alt = {i?.name} className=' relative  w-full h-full object-cover' /> 
+              {openfullstory && (
+                  <>
+                    {Allfullstory && Allfullstory?.map(i => {
+                      return (
+                        <div key = {i?.id}>
+                              <div className='w-full z-50 h-[100vh] p-6'> 
+                                <span className='absolute z-[100]  top-30 bg-gray-500 p-[1px] rounded-full '> 
+                                  <MdCancel onClick={cancelhandler} className='text-3xl' /> 
+                                </span>
+                                <img src = {i?.image} alt = {i?.name} className=' relative  w-full h-full object-cover' /> 
+                              </div>
                         </div>
-                  </div>
-                )
-              })}
+                      )
+                    })}
+                </> )}
             </div>
 
           <div className='grid -z-10 justify-center  items-center h-[75vh] font-sans italic' >
@@ -69,17 +83,3 @@ function App() {
 }
 
 export default App
-
-// view series of stories  -short disspear after 15 sec 
-// mobile only 
-// horizontal left - rght 
-                                                                                                                                     
-// fetch list form stories 
-// startviewing => 
- // ui control for navigation  prevbtn  nextbtn
-
-//  move automatically after 5 sec /
-
-// use loader 
-
-//use transitions
