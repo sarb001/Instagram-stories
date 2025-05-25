@@ -5,9 +5,8 @@ import { ListofStories } from './config/Data'
 function App() {
 
   return (
-    <div>
-      <div>
-         {/* <button className='bg-gray-500 px-2'> Prev </button> */}
+    <div> 
+      <div className='md:hidden'>
 
          <div className=' flex w-full overflow-x-scroll '>
             {ListofStories?.map(i => {
@@ -21,8 +20,18 @@ function App() {
               )
             })}
          </div>
-         {/* <button className='bg-gray-500 px-2'> Next </button> */}
+
+          <div className='grid justify-center  items-center h-[75vh] font-sans italic' >
+            <div>
+              <div> Instagram Stories </div>
+              <div> For Mobile View only </div>
+            </div>
+          </div>
       </div>
+
+        <div className='hidden justify-center items-center md:flex md:bg-black md:text-red-400'>
+              <div className='text-4xl'>  Change to Mobile View </div>
+        </div>
     </div>
   )
 }
