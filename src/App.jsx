@@ -1,5 +1,4 @@
-
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import { ListofStories } from './config/Data'
 import { MdCancel } from 'react-icons/md';
@@ -7,29 +6,45 @@ import { MdCancel } from 'react-icons/md';
 function App() {
 
    const[openfullstory,setopenfullstory] = useState(false);
-   const[Allfullstory,setAllfullstory]   = useState([]);
-   const[StoryLoader,setStoryLoader]     = useState(false);
+   const[currentStoryIndex, setCurrentStoryIndex] = useState(0);
+   const[Allfullstory,setAllfullstory] = useState([]);
+   const[AllData,setAllData] = useState(ListofStories);
 
-  const Storyshowhandler = (mainimage,name) => {   
-          setopenfullstory(true);
-          const NewStory = { image : mainimage, name : name }
+  useEffect(() => {
+    let intervalId;
+    
+    if (openfullstory && currentStoryIndex < ListofStories.length) {
 
-          setStoryLoader(false);
+        setAllfullstory([
+          {
+             id : currentStoryIndex,
+             name : ListofStories[currentStoryIndex]?.name,
+             image : ListofStories[currentStoryIndex]?.image,
+          }
+        ])
 
-        //  const newstory = setInterval(() => {
-        //     setAllfullstory([NewStory]);
-        //     console.log('moving to next');
-        //   }, 5000);
+      intervalId = setInterval(() => {
+        setCurrentStoryIndex(prevIndex => {
+          return prevIndex + 1;
+        });
+      }, 3000);
+    }
 
-         const Showtimer = setTimeout(() => {
-            setAllfullstory([NewStory])
-          } , 1000);
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [openfullstory, currentStoryIndex]);
 
-          return () => clearInterval(Showtimer);
+  const Storyshowhandler = (mainimage, name, index) => {   
+    setopenfullstory(true);
+    setCurrentStoryIndex(index);
+    const NewStory = { id: index, image: mainimage, name: name };
+    setAllfullstory([NewStory]);
   }
 
   const cancelhandler = () => {
-      setopenfullstory((prev) => !prev)
+    setopenfullstory(false);
+    setCurrentStoryIndex(0);
   }
 
   return (
@@ -39,7 +54,7 @@ function App() {
          <div className=' flex w-full overflow-x-scroll '>
             {ListofStories?.map((i,index) => {
               return (
-                <div key = {index} className='my-4 mx-2' onClick={() => Storyshowhandler(i?.image,i?.name)} >
+                <div key = {index} className='my-4 mx-2' onClick={() => Storyshowhandler(i?.image,i?.name,index)} >
                       <div className='w-[10vh] h-[10vh]'> 
                         <img src = {i?.image} alt = {i?.name} className = ' w-full h-full object-cover rounded-4xl '  /> 
                       </div>
@@ -52,9 +67,9 @@ function App() {
             <div>
               {openfullstory && (
                   <>
-                    {Allfullstory && Allfullstory?.map(i => {
+                    {Allfullstory && Allfullstory?.map((i,index) => {
                       return (
-                        <div key = {i?.id}>
+                        <div key = {index}>
                               <div className='w-full z-50 h-[100vh] p-6'> 
                                 <span className='absolute z-[100]  top-30 bg-gray-500 p-[1px] rounded-full '> 
                                   <MdCancel onClick={cancelhandler} className='text-3xl' /> 
